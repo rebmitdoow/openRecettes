@@ -1,0 +1,238 @@
+@import "./global-styles.css";
+
+html {
+  font-size: var(--base-font);
+}
+
+body {
+  font-family: var(--font);
+  margin: 0;
+  padding: 0;
+  background-color: white;
+}
+
+h1,
+h2 {
+  text-align: center;
+  margin: 20px 0;
+}
+
+h1 a {
+  text-decoration: none;
+  font-size: 2.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: var(--primary);
+}
+
+h2 {
+  font-size: 1.8rem;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px auto;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+.search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 90%;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+#textSearch {
+  display: inline-block;
+  font-family: var(--font);
+  max-width: 100%;
+  flex: 1;
+  /* margin: 10px auto; */
+  padding: 12px;
+  width: 90%;
+  border: 0.5px solid var(--border-color);
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: var(--light-box-shadow);
+}
+
+.searchDetails {
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  width: 700px;
+  border-radius: 5px;
+  display: none;
+  border: 1px solid #ddd;
+}
+
+#toggleSearchDetails {
+  flex: 0;
+  text-decoration: underline;
+  border: none;
+  max-width: 300px;
+  background: transparent;
+  color: var(--primary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-family: var(--font);
+}
+
+#motCles,
+#typesRecette,
+#boutonRecherche {
+  display: inline-block;
+  font-family: var(--font);
+  max-width: 100%;
+  flex: 1;
+}
+
+#motCles {
+  flex: 2;
+}
+
+#typesRecette {
+  max-width: 50%;
+}
+
+#motCles,
+#typesRecette {
+  margin: 10px auto;
+  padding: 12px;
+  width: 90%;
+  border: 0.5px solid var(--border-color);
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+  font-family: var(--font);
+  box-shadow: var(--light-box-shadow);
+}
+
+#motCles:focus,
+#typesRecette:focus {
+  border-color: var(--border-color);
+}
+
+#motCles::-webkit-search-cancel-button {
+  appearance: none;
+  background-color: transparent;
+  background-image: url("/assets/images/xmark.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+#motCles::-moz-clear {
+  appearance: none;
+  background-color: transparent;
+  background-image: url("/assets/images/xmark.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+#motCles::placeholder {
+  color: hsl(var(--primary) / 0.5);
+  font-style: italic;
+}
+
+#typesRecette {
+  background-color: transparent;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("/assets/images/arrow-separate-vertical.svg");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+  padding-right: 30px;
+  padding-left: 10px;
+}
+
+#boutonRecherche {
+  flex: 0;
+  padding: 12px 20px;
+  background: hsl(var(--primary));
+  border: 0.5px solid var(--border-color);
+  border-radius: 5px;
+  color: rgb(255, 251, 251);
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: var(--light-box-shadow);
+}
+
+#boutonRecherche:hover {
+  background-color: hsl(var(--primary) / 0.9);
+}
+
+#ajouterBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#listeResultats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  list-style-type: none;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 800px;
+}
+
+#listeResultats li {
+  position: relative;
+  padding: 15px;
+  background-color: transparent;
+  border: 0.5px solid var(--border-color);
+  box-shadow: var(--light-box-shadow);
+  border-radius: 5px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+#listeResultats a {
+  color: hsl(var(--primary));
+  text-decoration: none;
+}
+
+h3 {
+  font-weight: normal;
+}
+
+.card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+  height: 100%;
+}
+
+.card-link:hover {
+  color: hsl(var(--primary));
+}
+
+@media (max-width: 768px) {
+  .searchDetails {
+    /*     margin: 0 20px;
+ */
+    width: 90%;
+  }
+}

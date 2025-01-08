@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recette</title>
+  <link rel="stylesheet" href="css/recette.css">
+  <link rel="icon" href="/assets/images/books.svg" type="image/svg">
+</head>
+
+<body>
+  <h1>
+    <a href="/index.html">Open Recettes</a>
+  </h1>
+  <hr>
+  <div id="recetteName">
+    <p>Loading...</p>
+  </div>
+  <div id="portions">
+    <label for="portionsNb">Quantité totale</label>
+    <input type="number" id="portionsNb" name="portionsNb"><span style="margin-left: 5px" id="uniteRecette"></span>
+  </div>
+  <div class="recette">
+    <div class="ingredients">
+      <h3>Ingrédients</h3>
+      <ul id="ingredientsListe"></ul>
+    </div>
+    <div class="instructions">
+      <h3>Instructions</h3>
+      <ol id="instructionsListe"></ol>
+    </div>
+    <div class="variantes">
+      <h3>Variantes</h3>
+      <ul id="variantesListe"></ul>
+    </div>
+  </div>
+  <div class="infosRecette">
+    <div class="motsCles">
+      <h4>Mots clés</h4>
+      <id id="keywords"></id>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="js/recette.js"></script>
+</body>
+
+</html>

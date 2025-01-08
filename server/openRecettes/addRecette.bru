@@ -1,0 +1,43 @@
+meta {
+  name: addRecette
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:3000/ajouterRecette
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "nom_recette": "Gateau au chocolat",
+      "quantite_initiale_recette": 25,
+      "unite_recette": "kg",
+      "variantes_recette": [
+          "Remplacer le chocolat par du caramel"
+      ],
+      "instructions_recette": [
+          "Faire fondre le chocolat",
+          "Mélanger avec la farine"
+      ],
+      "mots_cles_recette": [
+          "chocolat",
+          "farine",
+          "gâteau"
+      ],
+      "ingredients_recette": [
+          {
+              "nom_ingredient": "Chocolat",
+              "quantite_ingredient": 15,
+              "unite_ingredient": "kg"
+          },
+          {
+              "nom_ingredient": "Farine",
+              "quantite_ingredient": 15,
+              "unite_ingredient": "kg"
+          }
+      ]
+  }
+}

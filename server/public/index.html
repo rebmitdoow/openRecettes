@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accueil | Open Recettes</title>
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="icon" href="/assets/images/books.svg" type="image/svg">
+</head>
+
+<body>
+  <h1><a href="/">Open Recettes</a></h1>
+  <h2>Rechercher</h2>
+  <div class="form">
+    <div class="search">
+      <label for="textSearch">Recherche</label>
+      <input id="textSearch" type="search" placeholder="example : Gratin">
+    </div>
+    <button id="toggleSearchDetails">Recherche avancée</button>
+    <div class="searchDetails">
+      <label for="motCles">Mots clés</label>
+      <input id="motCles" type="search" placeholder="Séparés par une virgule">
+      <label for="typesRecette">Type de recette</label>
+      <select id="typesRecette">
+        <option value="">Sélectionner</option>
+      </select>
+    </div>
+    <button id="boutonRecherche">Rechercher</button>
+  </div>
+  <ul id="listeResultats">
+    <li>
+      <a id="ajouterBtn" href="/ajouter">
+        <img src="/assets/images/plus-circle.svg" alt="Ajouter une recette" width="24" height="24" />
+        Ajouter une recette
+      </a>
+    </li>
+  </ul>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="js/index.js"></script>
+</body>
+
+</html>

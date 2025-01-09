@@ -1,4 +1,5 @@
 $(document).ready(function () {
+  const $searchInput = $("#textSearch");
   const $keywordInput = $("#motCles");
   const $searchButton = $("#boutonRecherche");
   const $resultList = $("#listeResultats");
@@ -25,7 +26,7 @@ $(document).ready(function () {
       headers: { "Content-type": "application/json" },
     });
     const results = await response.json();
-    console.log(results.valeurs_champ);
+    /* console.log(results.valeurs_champ); */
     populateTypeOptions(results.valeurs_champ);
   }
 
@@ -36,14 +37,14 @@ $(document).ready(function () {
       .split(",")
       .map((keyword) => keyword.trim().toLowerCase())
       .filter((keyword) => keyword !== "");
-
+    const search = $searchInput.val();
     try {
-      const response = await fetch("http://localhost:3000/api/search", {
+      const response = await fetch("http://localhost:3000/api/listRecettes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ keywords, type_recette }),
+        body: JSON.stringify({ keywords, type_recette, search }),
       });
 
       if (!response.ok) {
@@ -51,7 +52,7 @@ $(document).ready(function () {
       }
 
       const results = await response.json();
-      console.log(results);
+      /* console.log(results); */
       displayResults(results);
     } catch (error) {
       console.error("Error during search:", error);

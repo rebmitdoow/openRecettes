@@ -59,38 +59,65 @@ app.get("/ajouter", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "ajouter.html"));
 });
 
-app.post("/api/search", async (req, res) => {
-  const normalizeString = (str) =>
-    str
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase();
-
-  const { keywords, type_recette } = req.body;
-
+app.post("/api/listRecettes", async (req, res) => {
+  const { keywords, type_recette, search } = req.body;
   const query = {};
+  const stopWords = [
+    "de",
+    "et",
+    "la",
+    "le",
+    "les",
+    "des",
+    "du",
+    "un",
+    "une",
+    "en",
+    "à",
+    "au",
+  ];
 
-  if (keywords && Array.isArray(keywords) && keywords.length > 0) {
-    const normalizedKeywords = keywords.map((keyword) =>
-      normalizeString(keyword)
-    );
-    const regexConditions = normalizedKeywords.map((keyword) => {
-      const regexPattern = `\\b${keyword.replace(/\s+/g, "\\s*")}(s?)\\b`;
-      const regex = new RegExp(regexPattern, "i");
-      return { mots_cles_recette: { $regex: regex } };
-    });
-    if (regexConditions.length > 0) {
-      query.$or = regexConditions;
+  // Initialize arrays for AND and OR conditions
+  const andConditions = [];
+  const orConditions = [];
+
+  // If search term is provided, apply $text search
+  if (search) {
+    // Normalize and remove stop words
+    const words = search
+      .split(/\s+/)
+      .filter((word) => !stopWords.includes(word) && word.length > 0)
+      .map((word) => word.toLowerCase()); // Normalize by converting to lowercase
+
+    // Perform a $text search in the 'nom_recette' field
+    if (words.length > 0) {
+      query.$text = { $search: words.join(" ") }; // Using $text search
     }
   }
 
-  if (type_recette) {
-    query.type_recette = normalizeString(type_recette);
+  // Handle the 'keywords' logic if provided
+  if (keywords && Array.isArray(keywords) && keywords.length > 0) {
+    const normalizedKeywords = keywords.map((keyword) => keyword.toLowerCase());
+    const keywordConditions = normalizedKeywords.map((keyword) => ({
+      mots_cles_recette: { $regex: new RegExp(keyword, "i") },
+    }));
+    andConditions.push({ $and: keywordConditions });
   }
 
+  // Handle 'type_recette' if provided
+  if (type_recette) {
+    andConditions.push({ type_recette: type_recette.toLowerCase() });
+  }
+
+  // Apply AND conditions if there are any
+  if (andConditions.length > 0) {
+    query.$and = andConditions;
+  }
+
+  // Execute query
   try {
-    console.log("Query:", query);
-    const results = await Recettes.find(query);
+    console.log("Query:", JSON.stringify(query, null, 2));
+    const results = await Recettes.find(query).select("nom_recette");
     res.json(results);
   } catch (error) {
     console.error("Error fetching data:", error);

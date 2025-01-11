@@ -4,11 +4,21 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 const path = require("path");
+const rateLimit = require("express-rate-limit");
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: {
+    error: "Too many requests. Please try again later.",
+  },
+});
 
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
+app.use(apiLimiter);
 
 app.use(bodyParser.json());
 
@@ -76,26 +86,18 @@ app.post("/api/listRecettes", async (req, res) => {
     "à",
     "au",
   ];
-
-  // Initialize arrays for AND and OR conditions
   const andConditions = [];
   const orConditions = [];
-
-  // If search term is provided, apply $text search
   if (search) {
-    // Normalize and remove stop words
     const words = search
       .split(/\s+/)
       .filter((word) => !stopWords.includes(word) && word.length > 0)
-      .map((word) => word.toLowerCase()); // Normalize by converting to lowercase
-
-    // Perform a $text search in the 'nom_recette' field
+      .map((word) => word.toLowerCase());
     if (words.length > 0) {
-      query.$text = { $search: words.join(" ") }; // Using $text search
+      query.$text = { $search: words.join(" ") };
     }
   }
 
-  // Handle the 'keywords' logic if provided
   if (keywords && Array.isArray(keywords) && keywords.length > 0) {
     const normalizedKeywords = keywords.map((keyword) => keyword.toLowerCase());
     const keywordConditions = normalizedKeywords.map((keyword) => ({
@@ -104,19 +106,16 @@ app.post("/api/listRecettes", async (req, res) => {
     andConditions.push({ $and: keywordConditions });
   }
 
-  // Handle 'type_recette' if provided
   if (type_recette) {
     andConditions.push({ type_recette: type_recette.toLowerCase() });
   }
 
-  // Apply AND conditions if there are any
   if (andConditions.length > 0) {
     query.$and = andConditions;
   }
 
-  // Execute query
   try {
-    console.log("Query:", JSON.stringify(query, null, 2));
+    /* console.log("Query:", JSON.stringify(query, null, 2)); */
     const results = await Recettes.find(query).select("nom_recette");
     res.json(results);
   } catch (error) {

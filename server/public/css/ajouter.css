@@ -44,14 +44,20 @@ h2 {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 10px;
+  gap: 30px;
   margin: 20px auto;
   max-width: 800px;
   padding: 0 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* .form-container {
-} */
+.form-container label {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 5px;
+  align-self: flex-start;
+}
 
 .btn {
   flex: 0;
@@ -109,30 +115,42 @@ h2 {
   border-color: var(--border-color);
 }
 
-#quantite {
+.input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* #quantite {
   display: flex;
-  justify-content: center;
   flex-direction: row;
   align-items: center;
-  width: 80%;
+  align-content: center;
   gap: 10px;
+  width: 100%;
+} */
+
+/* #quantite label {
+} */
+
+#quantite .input {
+  max-width: 200px;
 }
 
 .form-container {
   display: flex;
-  justify-content: center;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
+  width: 100%;
 }
 
 .section {
-  margin: 5px;
   display: flex;
-  justify-content: center;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 10px;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 .modal {
@@ -148,9 +166,24 @@ h2 {
 }
 
 .modal-content {
+  display: flex;
   background-color: white;
   padding: 20px;
   border-radius: 5px;
-  width: 80%;
-  max-width: 400px;
+  width: 90%;
+  max-width: 500px;
+  flex-direction: column;
+  gap: 15px;
+  box-sizing: border-box;
+}
+
+.ingredient-name {
+  display: inline-flex;
+  margin: 10px;
+}
+
+.icon-trash {
+  width: 17px;
+  height: 17px;
+  vertical-align: middle;
 }

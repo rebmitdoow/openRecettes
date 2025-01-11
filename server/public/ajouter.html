@@ -19,14 +19,16 @@
     </div>
     <div class="form-container" id="quantite">
       <label for="quantite_recette">Quantité totale</label>
-      <input type="number" class="input" id="quantite_recette" name="quantite_recette" step="any" required>
-      <select id="unite_recette" class="btn select" name="unite_recette" required>
-        <option value="kg">kg</option>
-        <option value="l">litres</option>
-        <option value="ml">ml</option>
-        <option value="g">g</option>
-        <option value="u">u</option>
-      </select>
+      <div id="qte-unit">
+        <input type="number" class="input" id="quantite_recette" name="quantite_recette" step="any" required>
+        <select id="unite_recette" class="btn select" name="unite_recette" required>
+          <option value="kg">kg</option>
+          <option value="l">litres</option>
+          <option value="ml">ml</option>
+          <option value="g">g</option>
+          <option value="u">u</option>
+        </select>
+      </div>
     </div>
     <div class="form-container">
       <label for="type_recette">Type de recette</label>

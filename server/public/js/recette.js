@@ -57,9 +57,9 @@ function displayIngredients(recetteData) {
   ingredients.forEach((ingredient) => {
     const adjustedMass =
       (ingredient.quantite_ingredient / quantite_totale) * portionsNb;
-    const listItem = `<li>${ingredient.nom_ingredient} : ${adjustedMass.toFixed(
-      2
-    )} ${ingredient.unite_ingredient}</li>`;
+    const listItem = `<li><b>${ingredient.nom_ingredient} :</b> ${adjustedMass
+      .toFixed(2)
+      .replace(".", ",")} ${ingredient.unite_ingredient}</li>`;
     $ingredientListe.append(listItem);
   });
 }

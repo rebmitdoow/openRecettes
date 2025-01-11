@@ -30,15 +30,20 @@ $(document).ready(function () {
     console.log(ingredientsData);
     const section = $("<div>").addClass("ingredient-section");
     section.append(
-      $("<span>").text(
-        `${ingredientName}: ${ingredientQuantity} ${ingredientUnit}`
-      )
+      $("<span>")
+        .text(`${ingredientName} : ${ingredientQuantity} ${ingredientUnit}`)
+        .attr("class", "ingredient-name")
     );
-    // this works
 
     const removeButton = $("<button>")
-      .text("Retirer")
-      .addClass("btn btn-secondary")
+      .addClass("btn btn-secondary remove-ingredient-btn")
+      .attr("aria-label", `Remove ingredient: ${ingredientName}`)
+      .append(
+        $("<img>")
+          .attr("src", "/assets/images/trash.svg")
+          .attr("alt", "Retirer")
+          .addClass("icon-trash")
+      )
       .on("click", function () {
         const index = ingredientsData.findIndex(
           (ing) =>
@@ -55,7 +60,6 @@ $(document).ready(function () {
     $("#ingredientForm").trigger("reset");
     $("#ingredientModal").hide();
     console.log(ingredientsData);
-    // this works
   });
 
   $("#addEtapeButton").on("click", function () {

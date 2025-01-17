@@ -5,14 +5,13 @@ meta {
 }
 
 post {
-  url: http://localhost:3000/search
+  url: http://localhost:3000/api/listRecettes
   body: json
   auth: none
 }
 
 body:json {
   {
-    "keywords": ["butternut"],
-    "type_recette": "dessert"
+    "search": "pàte"
   }
 }

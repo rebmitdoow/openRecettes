@@ -104,26 +104,32 @@ function displayInstructions(instructions) {
 
 function displayVariantes(variantes) {
   const $variantesListe = $("#variantesListe");
+  const $variantesDiv = $(".variantes");
   $variantesListe.empty();
 
   if (variantes && variantes.length > 0) {
+    $variantesDiv.show();
     variantes.forEach((variante) => {
       const listItem = `<li>${variante}</li>`;
       $variantesListe.append(listItem);
     });
+  } else {
+    $variantesDiv.hide();
   }
 }
 
 function displayMotsCles(motsCles) {
   const $keywordsContainer = $("#keywords");
+  const $keywordsDiv = $(".motsCles");
   $keywordsContainer.empty();
 
   if (motsCles && motsCles.length > 0) {
+    $keywordsDiv.show();
     motsCles.forEach((motCle) => {
       const keywordItem = `<span>${motCle}<span>`;
       $keywordsContainer.append(keywordItem);
     });
   } else {
-    $keywordsContainer.html("<span>Pas de mots clés</span>");
+    $keywordsDiv.hide();
   }
 }

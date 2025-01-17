@@ -1,3 +1,5 @@
+const baseUrl = "http://localhost:3000";
+
 $(document).ready(function () {
   const $typeOptions = $("#type_recette");
   const ingredientsData = [];
@@ -64,20 +66,23 @@ $(document).ready(function () {
 
   $("#addEtapeButton").on("click", function () {
     const dynamicTextAreas = $("#etapes");
-
     const container = $("<div>").addClass("section");
 
     const newTextArea = $("<textarea>")
-      .addClass("etape-textarea")
+      .addClass("etape-textarea input")
       .attr("rows", 4)
       .attr("cols", 50)
-      .attr("class", "input")
       .attr("placeholder", "Description de l'étape");
 
     const removeButton = $("<button>")
-      .text("Retirer")
-      .attr("type", "button")
-      .attr("class", "btn btn-secondary")
+      .addClass("btn btn-secondary remove-ingredient-btn")
+      .attr("aria-label", "Remove step")
+      .append(
+        $("<img>")
+          .attr("src", "/assets/images/trash.svg")
+          .attr("alt", "Retirer")
+          .addClass("icon-trash")
+      )
       .on("click", function () {
         container.remove();
       });
@@ -92,16 +97,20 @@ $(document).ready(function () {
     const container = $("<div>").addClass("section");
 
     const newTextArea = $("<textarea>")
-      .addClass("variante-textarea")
+      .addClass("variante-textarea input")
       .attr("rows", 4)
       .attr("cols", 50)
-      .attr("class", "input")
       .attr("placeholder", "Description");
 
     const removeButton = $("<button>")
-      .text("Retirer")
-      .attr("type", "button")
-      .attr("class", "btn btn-secondary")
+      .addClass("btn btn-secondary remove-ingredient-btn")
+      .attr("aria-label", `Remove ingredient: ${ingredientName}`)
+      .append(
+        $("<img>")
+          .attr("src", "/assets/images/trash.svg")
+          .attr("alt", "Retirer")
+          .addClass("icon-trash")
+      )
       .on("click", function () {
         container.remove();
       });
@@ -159,7 +168,7 @@ $(document).ready(function () {
     console.log("FormData before submission:", formData);
     try {
       const response = await $.ajax({
-        url: "http://localhost:3000/api/ajouterRecette",
+        url: `${baseUrl}/api/ajouterRecette`,
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(formData),
@@ -184,7 +193,7 @@ $(document).ready(function () {
   }
 
   async function searchTypes() {
-    const response = await fetch("http://localhost:3000/api/types", {
+    const response = await fetch(`${baseUrl}/api/types`, {
       method: "GET",
       headers: { "Content-type": "application/json" },
     });
@@ -192,4 +201,63 @@ $(document).ready(function () {
     populateTypeOptions(results.valeurs_champ);
   }
   searchTypes();
+});
+
+$(document).ready(function () {
+  const $searchInput = $("#search_recette");
+  const $searchResults = $("#search_results");
+  let selectedRecipe = null;
+
+  $searchInput.on("input", async function () {
+    const searchValue = $searchInput.val().trim();
+    if (searchValue.length < 2) {
+      $searchResults.hide();
+      return;
+    }
+
+    try {
+      const response = await $.ajax({
+        url: `${baseUrl}/api/listRecettes`,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ search: searchValue }),
+      });
+
+      if (response && Array.isArray(response)) {
+        $searchResults.empty();
+        response.forEach((recipe) => {
+          const listItem = $("<li>")
+            .text(recipe.nom_recette)
+            .data("recipe-id", recipe._id)
+            .on("click", function () {
+              selectedRecipe = {
+                _id: $(this).data("recipe-id"),
+                nom_recette: $(this).text(),
+              };
+              $searchInput.val(selectedRecipe.nom_recette);
+              $searchResults.hide();
+              console.log("Selected Recipe:", selectedRecipe);
+            });
+          $searchResults.append(listItem);
+        });
+        $searchResults.show();
+      } else {
+        $searchResults.hide();
+      }
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+  });
+  $(document).on("click", function (e) {
+    if (!$(e.target).closest("#search_recette, #search_results").length) {
+      $searchResults.hide();
+    }
+  });
+  $("#addDataForm").on("submit", function (event) {
+    event.preventDefault();
+    const formData = {
+      linked_recipe: selectedRecipe,
+    };
+    console.log("FormData with linked recipe:", formData);
+  });
 });

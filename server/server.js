@@ -18,7 +18,7 @@ const app = express();
 const PORT = 3000;
 
 app.use(cors());
-app.use(apiLimiter);
+/* app.use(apiLimiter); */
 
 app.use(bodyParser.json());
 
@@ -42,6 +42,8 @@ const recettesSchema = new mongoose.Schema(
     quantite_recette: Number,
     type_recette: String,
     source_recette: String,
+    mere_recette: mongoose.ObjectId,
+    fille_recette: mongoose.ObjectId,
   },
   { collection: "recettes" }
 );
@@ -69,6 +71,26 @@ app.get("/ajouter", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "ajouter.html"));
 });
 
+const diacriticRegex = (str) => {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .split("")
+    .map((char) => {
+      const diacriticMap = {
+        a: "[aàáâãäå]",
+        e: "[eèéêë]",
+        i: "[iìíîï]",
+        o: "[oòóôõö]",
+        u: "[uùúûü]",
+        c: "[cç]",
+        n: "[nñ]",
+      };
+      return diacriticMap[char.toLowerCase()] || char;
+    })
+    .join("");
+};
+
 app.post("/api/listRecettes", async (req, res) => {
   const { keywords, type_recette, search } = req.body;
   const query = {};
@@ -88,26 +110,39 @@ app.post("/api/listRecettes", async (req, res) => {
   ];
   const andConditions = [];
   const orConditions = [];
+
   if (search) {
-    const words = search
+    const normalizedSearch = search.toLowerCase().trim();
+    const words = normalizedSearch
       .split(/\s+/)
-      .filter((word) => !stopWords.includes(word) && word.length > 0)
-      .map((word) => word.toLowerCase());
+      .filter((word) => !stopWords.includes(word) && word.length > 0);
+
     if (words.length > 0) {
-      query.$text = { $search: words.join(" ") };
+      const searchConditions = words.map((word) => ({
+        nom_recette: { $regex: new RegExp(diacriticRegex(word), "i") },
+      }));
+      orConditions.push(...searchConditions);
     }
   }
 
   if (keywords && Array.isArray(keywords) && keywords.length > 0) {
-    const normalizedKeywords = keywords.map((keyword) => keyword.toLowerCase());
+    const normalizedKeywords = keywords.map((keyword) =>
+      keyword.toLowerCase().trim()
+    );
     const keywordConditions = normalizedKeywords.map((keyword) => ({
-      mots_cles_recette: { $regex: new RegExp(keyword, "i") },
+      mots_cles_recette: { $regex: new RegExp(diacriticRegex(keyword), "i") },
     }));
     andConditions.push({ $and: keywordConditions });
   }
 
   if (type_recette) {
-    andConditions.push({ type_recette: type_recette.toLowerCase() });
+    andConditions.push({
+      type_recette: type_recette.toLowerCase(),
+    });
+  }
+
+  if (orConditions.length > 0) {
+    query.$or = orConditions;
   }
 
   if (andConditions.length > 0) {
@@ -115,7 +150,6 @@ app.post("/api/listRecettes", async (req, res) => {
   }
 
   try {
-    /* console.log("Query:", JSON.stringify(query, null, 2)); */
     const results = await Recettes.find(query).select("nom_recette");
     res.json(results);
   } catch (error) {

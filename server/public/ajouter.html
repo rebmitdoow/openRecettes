@@ -14,6 +14,12 @@
   <h2>Ajouter une recette</h2>
   <form id="addDataForm">
     <div class="form-container">
+      <label for="linked_recette">Variante de</label>
+      <small>(laisser vide si la recette est originale)</small>
+      <input type="text" id="search_recette" class="input" placeholder="Rechercher une recette existante">
+      <ul id="search_results" class="dropdown"></ul>
+    </div>
+    <div class="form-container">
       <label for="nom_recette">Nom de la recette</label>
       <input type="text" class="input" id="nom_recette" name="nom_recette" required>
     </div>

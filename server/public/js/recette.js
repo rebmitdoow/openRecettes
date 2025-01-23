@@ -1,3 +1,4 @@
+const baseUrl = "http://localhost:3005"
 let portionsNb = 1;
 let recetteData = {};
 
@@ -11,7 +12,7 @@ $(document).ready(async function () {
 
   try {
     const response = await fetch(
-      `http://localhost:3000/api/recette?id=${recetteId}`
+      `/api/recette?id=${recetteId}`
     );
 
     if (!response.ok) {

@@ -21,7 +21,7 @@ $(document).ready(function () {
   }
 
   async function searchTypes() {
-    const response = await fetch("http://localhost:3000/api/types", {
+    const response = await fetch("/api/types", {
       method: "GET",
       headers: { "Content-type": "application/json" },
     });
@@ -39,7 +39,7 @@ $(document).ready(function () {
       .filter((keyword) => keyword !== "");
     const search = $searchInput.val();
     try {
-      const response = await fetch("http://localhost:3000/api/listRecettes", {
+      const response = await fetch("/api/listRecettes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -71,7 +71,7 @@ $(document).ready(function () {
     results.forEach((item) => {
       const $listItem = $("<li>");
       const $link = $("<a>")
-        .attr("href", `http://localhost:3000/recette?id=${item._id}`)
+        .attr("href", `/recette?id=${item._id}`)
         .attr("target", "_blank")
         .addClass("card-link");
       const $title = $("<h3>").text(item.nom_recette);

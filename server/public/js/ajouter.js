@@ -1,5 +1,3 @@
-const baseUrl = "http://localhost:3000";
-
 $(document).ready(function () {
   const $typeOptions = $("#type_recette");
   const ingredientsData = [];
@@ -168,7 +166,7 @@ $(document).ready(function () {
     console.log("FormData before submission:", formData);
     try {
       const response = await $.ajax({
-        url: `${baseUrl}/api/ajouterRecette`,
+        url: `/api/ajouterRecette`,
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(formData),
@@ -193,7 +191,7 @@ $(document).ready(function () {
   }
 
   async function searchTypes() {
-    const response = await fetch(`${baseUrl}/api/types`, {
+    const response = await fetch("/api/types", {
       method: "GET",
       headers: { "Content-type": "application/json" },
     });
@@ -217,7 +215,7 @@ $(document).ready(function () {
 
     try {
       const response = await $.ajax({
-        url: `${baseUrl}/api/listRecettes`,
+        url: "/api/listRecettes",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify({ search: searchValue }),

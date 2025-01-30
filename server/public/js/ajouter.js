@@ -1,4 +1,11 @@
 $(document).ready(function () {
+  $(".dropdown-item").on("click", function () {
+    const selectedText = $(this).text();
+    const selectedValue = $(this).data("value");
+    $("#unite_recette").text(selectedText);
+    console.log("Selected Data-Value:", selectedValue);
+  });
+
   const $typeOptions = $("#type_recette");
   const ingredientsData = [];
 
@@ -58,7 +65,9 @@ $(document).ready(function () {
     section.append(removeButton);
     $("#ingredients").append(section);
     $("#ingredientForm").trigger("reset");
-    $("#ingredientModal").hide();
+
+    $("#ingredientModal").modal("hide");
+
     console.log(ingredientsData);
   });
 
@@ -125,65 +134,76 @@ $(document).ready(function () {
     $(this).val(value);
   });
 
-  $("#addDataForm").on("submit", async function (event) {
-    event.preventDefault();
-    console.log("Ingredients Data before form submission:", ingredientsData);
-    const nom_recette = $("#nom_recette").val();
-    const quantite_recette = parseFloat($("#quantite_recette").val());
-    const unite_recette = $("#unite_recette").val();
-    const type_recette = $("#type_recette").val();
+  $(document).ready(function () {
+    $(".dropdown-item").on("click", function () {
+      const selectedText = $(this).text();
+      const selectedValue = $(this).data("value");
+      $("#unite_recette").text(selectedText);
+      $("#unite_recette").data("value", selectedValue);
+    });
 
-    const instructions_recette = $(".etape-textarea")
-      .map(function () {
-        return $(this).val().trim();
-      })
-      .get()
-      .filter((note) => note !== "");
+    $("#addDataForm").on("submit", async function (event) {
+      event.preventDefault();
 
-    const variantes_recette = $(".variante-textarea")
-      .map(function () {
-        return $(this).val().trim();
-      })
-      .get()
-      .filter((note) => note !== "");
+      console.log("Ingredients Data before form submission:", ingredientsData);
+      const nom_recette = $("#nom_recette").val();
+      const quantite_recette = parseFloat($("#quantite_recette").val());
+      const unite_recette = $("#unite_recette").data("value");
+      const type_recette = $("#type_recette").val();
 
-    const mots_cles_recette = $("#mots_cles_recette")
-      .val()
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag !== "");
+      const instructions_recette = $(".etape-textarea")
+        .map(function () {
+          return $(this).val().trim();
+        })
+        .get()
+        .filter((note) => note !== "");
 
-    const formData = {
-      nom_recette,
-      quantite_recette,
-      unite_recette,
-      variantes_recette,
-      instructions_recette,
-      mots_cles_recette,
-      ingredients_recette: [...ingredientsData],
-      type_recette,
-    };
-    console.log("FormData before submission:", formData);
-    try {
-      const response = await $.ajax({
-        url: `/api/ajouterRecette`,
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify(formData),
-      });
-      if (response) {
-        alert("Data added successfully!");
-        $("#addDataForm").trigger("reset");
-        $("#ingredients").empty();
-        ingredientsData.length = 0;
-      } else {
-        alert("Failed to add data.");
+      const variantes_recette = $(".variante-textarea")
+        .map(function () {
+          return $(this).val().trim();
+        })
+        .get()
+        .filter((note) => note !== "");
+
+      const mots_cles_recette = $("#mots_cles_recette")
+        .val()
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag !== "");
+
+      const formData = {
+        nom_recette,
+        quantite_recette,
+        unite_recette,
+        variantes_recette,
+        instructions_recette,
+        mots_cles_recette,
+        ingredients_recette: [...ingredientsData],
+        type_recette,
+      };
+      console.log("FormData before submission:", formData);
+      try {
+        const response = await $.ajax({
+          url: `/api/ajouterRecette`,
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(formData),
+        });
+        if (response) {
+          alert("Data added successfully!");
+          $("#addDataForm").trigger("reset");
+          $("#ingredients").empty();
+          ingredientsData.length = 0;
+        } else {
+          alert("Failed to add data.");
+        }
+      } catch (error) {
+        console.error("Error during form submission:", error);
+        alert("An error occurred. Please try again.");
       }
-    } catch (error) {
-      console.error("Error during form submission:", error);
-      alert("An error occurred. Please try again.");
-    }
+    });
   });
+
   function populateTypeOptions(options) {
     options.forEach((option) => {
       $typeOptions.append(new Option(option, option));
@@ -205,7 +225,7 @@ $(document).ready(function () {
   const $searchInput = $("#search_recette");
   const $searchResults = $("#search_results");
   let selectedRecipe = null;
-
+  let highlightedIndex = -1;
   $searchInput.on("input", async function () {
     const searchValue = $searchInput.val().trim();
     if (searchValue.length < 2) {
@@ -221,10 +241,12 @@ $(document).ready(function () {
         data: JSON.stringify({ search: searchValue }),
       });
 
-      if (response && Array.isArray(response)) {
-        $searchResults.empty();
-        response.forEach((recipe) => {
+      $searchResults.empty();
+
+      if (response && Array.isArray(response) && response.length > 0) {
+        response.forEach((recipe, index) => {
           const listItem = $("<li>")
+            .addClass("dropdown-item")
             .text(recipe.nom_recette)
             .data("recipe-id", recipe._id)
             .on("click", function () {
@@ -236,16 +258,51 @@ $(document).ready(function () {
               $searchResults.hide();
               console.log("Selected Recipe:", selectedRecipe);
             });
+
           $searchResults.append(listItem);
         });
-        $searchResults.show();
       } else {
-        $searchResults.hide();
+        const noResultsItem = $("<li>")
+          .addClass("dropdown-item text-muted")
+          .text("No results")
+          .css("pointer-events", "none");
+        $searchResults.append(noResultsItem);
       }
+
+      $searchResults.show();
+      highlightedIndex = -1;
     } catch (error) {
       console.error("Error fetching search results:", error);
     }
   });
+
+  $searchInput.on("keydown", function (e) {
+    const items = $searchResults.find("li");
+    if (items.length === 0) return;
+
+    if (e.key === "ArrowDown") {
+      highlightedIndex = Math.min(highlightedIndex + 1, items.length - 1);
+      updateHighlight(items);
+    } else if (e.key === "ArrowUp") {
+      highlightedIndex = Math.max(highlightedIndex - 1, 0);
+      updateHighlight(items);
+    } else if (e.key === "Enter" && highlightedIndex >= 0) {
+      const selectedItem = items.eq(highlightedIndex);
+      selectedRecipe = {
+        _id: selectedItem.data("recipe-id"),
+        nom_recette: selectedItem.text(),
+      };
+      $searchInput.val(selectedRecipe.nom_recette);
+      $searchResults.hide();
+      console.log("Selected Recipe:", selectedRecipe);
+    }
+  });
+  function updateHighlight(items) {
+    items.removeClass("bg-primary text-white");
+    if (highlightedIndex >= 0) {
+      items.eq(highlightedIndex).addClass("bg-primary text-white");
+    }
+  }
   $(document).on("click", function (e) {
     if (!$(e.target).closest("#search_recette, #search_results").length) {
       $searchResults.hide();

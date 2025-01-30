@@ -5,13 +5,10 @@ $(document).ready(function () {
   const $resultList = $("#listeResultats");
   const $typeOptions = $("#typesRecette");
 
-  $("#toggleSearchDetails").click(function () {
+  $("#toggleSearchDetails").click(function (e) {
+    e.preventDefault();
     const searchDetails = $(".searchDetails");
-    if (searchDetails.css("display") === "none") {
-      searchDetails.css("display", "flex");
-    } else {
-      searchDetails.css("display", "none");
-    }
+    searchDetails.toggleClass("d-none d-flex");
   });
 
   function populateTypeOptions(options) {
@@ -30,7 +27,8 @@ $(document).ready(function () {
     populateTypeOptions(results.valeurs_champ);
   }
 
-  $searchButton.on("click", async function () {
+  $searchButton.on("click", async function (event) {
+    event.preventDefault();
     const type_recette = $typeOptions.val();
     const keywords = $keywordInput
       .val()
@@ -52,7 +50,6 @@ $(document).ready(function () {
       }
 
       const results = await response.json();
-      /* console.log(results); */
       displayResults(results);
     } catch (error) {
       console.error("Error during search:", error);
@@ -64,21 +61,31 @@ $(document).ready(function () {
     $resultList.empty();
 
     if (results.length === 0) {
-      $resultList.append("<i>Aucun résultat</i>");
+      $resultList.append(
+        "<div class='col'><div class='card'><div class='card-body'>Aucun résultat</div></div></div>"
+      );
       return;
     }
 
     results.forEach((item) => {
-      const $listItem = $("<li>");
-      const $link = $("<a>")
-        .attr("href", `/recette?id=${item._id}`)
-        .attr("target", "_blank")
-        .addClass("card-link");
-      const $title = $("<h3>").text(item.nom_recette);
+      const $button = $("<button>")
+        .attr("type", "button")
+        .addClass("btn btn-link text-start w-100")
+        .text(item.nom_recette)
+        .on("click", function () {
+          window.open(`/recette?id=${item._id}`, "_blank");
+        });
 
-      $link.append($title);
-      $listItem.append($link);
-      $resultList.append($listItem);
+      const $cardBody = $("<div>").addClass("card-body");
+      const $card = $("<div>").addClass("card");
+
+      $cardBody.append($button);
+      $card.append($cardBody);
+
+      // Wrap in a Bootstrap `.col`
+      const $col = $("<div>").addClass("col").append($card);
+
+      $resultList.append($col);
     });
   }
 

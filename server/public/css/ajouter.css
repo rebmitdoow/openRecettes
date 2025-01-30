@@ -98,7 +98,7 @@ h2 {
   background-color: transparent;
   cursor: pointer;
   appearance: none;
-  background-image: url("/assets/images/arrow-separate-vertical.svg");
+  /*   background-image: url("/assets/images/arrow-separate-vertical.svg"); */
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 20px;
@@ -113,6 +113,26 @@ h2 {
   font-family: var(--font);
   box-shadow: var(--light-box-shadow);
   border-color: var(--border-color);
+}
+
+#search_recette {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.dropdown-menu {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#search_results {
+  display: none; /* Default hidden */
+  position: absolute; /* Required for dropdown to align correctly */
+  z-index: 1050; /* Ensure it overlays other elements */
+}
+#search_results.show {
+  display: block; /* Show dropdown when this class is added */
 }
 
 .input {

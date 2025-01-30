@@ -5,106 +5,136 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ajouter une recette | Open Recettes</title>
-  <link rel="stylesheet" href="css/ajouter.css">
   <link rel="icon" href="/assets/images/books.svg" type="image/svg">
+  <!--  <link rel="stylesheet" href="css/global-styles.css"> -->
+  <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
-  <h1><a href="/">Open Recettes</a></h1>
-  <div style="display: flex;  align-items: center; justify-content: center;">
-    <a style="text-decoration: none; color: black;" href="/"> <button type="button" class="btn btn-secondary">← Retour à
-        la recherche</button></button></a>
-  </div>
-  <h2>Ajouter une recette</h2>
-  <form id="addDataForm">
-    <div class="form-container">
-      <label for="linked_recette">Variante de</label>
-      <small>(laisser vide si la recette est originale)</small>
-      <input type="text" id="search_recette" class="input" placeholder="Rechercher une recette existante">
-      <ul id="search_results" class="dropdown"></ul>
+  <div class="container mt-4">
+    <h1 class="text-center mb-4"><a href="/" class="text-decoration-none text-dark fw-bold">Open Recettes</a></h1>
+    <div class="d-flex mb-4">
+      <a href="/" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i>Retour à la recherche</a>
     </div>
-    <div class="form-container">
-      <label for="nom_recette">Nom de la recette</label>
-      <input type="text" class="input" id="nom_recette" name="nom_recette" required>
-    </div>
-    <div class="form-container" id="quantite">
-      <label for="quantite_recette">Quantité totale</label>
-      <div id="qte-unit">
-        <input type="number" class="input" id="quantite_recette" name="quantite_recette" step="any" required>
-        <select id="unite_recette" class="btn select" name="unite_recette" required>
-          <option value="kg">kg</option>
-          <option value="l">litres</option>
-          <option value="ml">ml</option>
-          <option value="g">g</option>
-          <option value="u">u</option>
+    <h2 class="text-center mb-5 fw-semibold">Ajouter une recette</h2>
+
+    <form id="addDataForm" class="m-5">
+      <div class="mb-3">
+        <label for="linked_recette" class="form-label">Variante de</label>
+        <small class="form-text text-muted">(laisser vide si la recette est originale)</small>
+        <div class="dropdown">
+          <input type="text" id="search_recette" class="form-control" placeholder="Rechercher une recette existante"
+            aria-expanded="false">
+          <ul id="search_results" class="dropdown-menu w-100 mt-1" style="display: none;"></ul>
+        </div>
+      </div>
+
+
+      <div class="mb-3">
+        <label for="nom_recette" class="form-label">Nom de la recette</label>
+        <input type="text" class="form-control" id="nom_recette" name="nom_recette" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="quantite_recette" class="form-label">Quantité totale</label>
+        <div class="input-group">
+          <input type="number" class="form-control" id="quantite_recette" name="quantite_recette" step="any" required>
+          <button id="unite_recette" class="btn btn-outline-secondary dropdown-toggle" type="button"
+            data-bs-toggle="dropdown" aria-expanded="false">Unité</button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" data-value="kg">kg</a></li>
+            <li><a class="dropdown-item" href="#" data-value="l">litres</a></li>
+            <li><a class="dropdown-item" href="#" data-value="ml">ml</a></li>
+            <li><a class="dropdown-item" href="#" data-value="g">g</a></li>
+            <li><a class="dropdown-item" href="#" data-value="u">u</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="type_recette" class="form-label">Type de recette</label>
+        <select id="type_recette" class="form-select">
+          <option value="">Choisir un type de recette</option>
         </select>
       </div>
-    </div>
-    <div class="form-container">
-      <label for="type_recette">Type de recette</label>
-      <select id="type_recette" class="btn select">
-        <option value="">Choisir un type de recette</option>
-      </select>
-    </div>
-    <div class="form-container">
-      <label>Ingrédients</label>
-      <div id="ingredients"></div>
-      <button type="button" class="btn btn-secondary" id="addingredientButton">Ajouter un ingrédient</button>
-    </div>
-    <div class="form-container">
-      <label>Instructions</label>
-      <div id="etapes"></div>
-      <button type="button" class="btn btn-secondary" id="addEtapeButton">Ajouter une étape</button>
-    </div>
-    <div class="form-container">
-      <label>Variantes</label>
-      <div id="variantes"></div>
-      <button type="button" class="btn btn-secondary" id="addVarianteButton">Ajouter une variante</button>
-    </div>
-    <div class="form-container">
-      <label for="tags">Mots clés (en minuscule, séparés par des virgules)</label>
-      <input type="text" class="input" id="mots_cles_recette" name="mots_cles_recette"
-        placeholder="Ajouter des mots clés">
-    </div>
-    <button class="btn btn-primary" type="submit">Ajouter la recette</button>
-  </form>
 
-  <!-- Modal -->
-  <div id="ingredientModal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <h3>Ajouter un ingrédient</h3>
-      <form id="ingredientForm">
-        <div class="form-container">
-          <label for="ingredientName">Nom de l'ingrédient</label>
-          <input type="text" id="ingredientName" class="input" required>
-        </div>
-        <div class="form-container">
-          <label for="ingredientQuantity">Quantité</label>
-          <input type="number" id="ingredientQuantity" class="input" step="any" required>
-        </div>
-        <div class="form-container">
-          <label for="ingredientUnit">Unité</label>
-          <select id="ingredientUnit" class="select" required>
-            <option value="ml">ml</option>
-            <option value="l">litres</option>
-            <option value="g">g</option>
-            <option value="kg">kg</option>
-            <option value="u">u</option>
-            <option value="cuillère(s) à café">cuillère(s) à café</option>
-            <option value="cuillère(s) à soupe">cuillère(s) à soupe</option>
-          </select>
-        </div>
-        <div class="form-container">
-          <button type="submit" class="btn btn-primary">Ajouter</button>
-          <button type="button" class="btn btn-secondary" id="closeModalButton">Annuler</button>
-        </div>
-      </form>
-    </div>
+      <div class="mb-3">
+        <label class="form-label">Ingrédients</label>
+        <div id="ingredients" class="mb-2"></div>
+        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
+          data-bs-target="#ingredientModal">
+          Ajouter un ingrédient
+        </button>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Instructions</label>
+        <div id="etapes" class="mb-2"></div>
+        <button type="button" class="btn btn-outline-secondary" id="addEtapeButton">Ajouter une étape</button>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Variantes</label>
+        <div id="variantes" class="mb-2"></div>
+        <button type="button" class="btn btn-outline-secondary" id="addVarianteButton">Ajouter une variante</button>
+      </div>
+
+      <div class="mb-3">
+        <label for="tags" class="form-label">Mots clés</label>
+        <input type="text" class="form-control" id="mots_cles_recette" name="mots_cles_recette"
+          placeholder="Ajouter des mots clés (en minuscule, séparés par des virgules)">
+      </div>
+
+      <button class="btn btn-primary w-100" type="submit">Ajouter la recette</button>
+    </form>
   </div>
 
+  <!-- Modal -->
+  <div id="ingredientModal" class="modal fade" tabindex="-1" aria-labelledby="ingredientModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ingredientModalLabel">Ajouter un ingrédient</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="ingredientForm">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="ingredientName" class="form-label">Nom de l'ingrédient</label>
+              <input type="text" id="ingredientName" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="ingredientQuantity" class="form-label">Quantité</label>
+              <input type="number" id="ingredientQuantity" class="form-control" step="any" required>
+            </div>
+            <div class="mb-3">
+              <label for="ingredientUnit" class="form-label">Unité</label>
+              <select id="ingredientUnit" class="form-select" required>
+                <option value="ml">ml</option>
+                <option value="l">litres</option>
+                <option value="g">g</option>
+                <option value="kg">kg</option>
+                <option value="u">u</option>
+                <option value="cuillère(s) à café">cuillère(s) à café</option>
+                <option value="cuillère(s) à soupe">cuillère(s) à soupe</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
   <script src="js/ajouter.js"></script>
 </body>
 

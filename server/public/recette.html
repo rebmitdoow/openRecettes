@@ -5,40 +5,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Recette</title>
-  <link rel="stylesheet" href="css/recette.css">
+  <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
   <link rel="icon" href="/assets/images/books.svg" type="image/svg">
 </head>
 
 <body>
-  <h1>
-    <a href="/index.html">Open Recettes</a>
-  </h1>
-  <hr>
-  <div id="recetteName">
-    <p>Loading...</p>
-  </div>
-  <div id="portions">
-    <label for="portionsNb">Quantité totale</label>
-    <input type="number" id="portionsNb" name="portionsNb"><span style="margin-left: 5px" id="uniteRecette"></span>
-  </div>
-  <div class="recette">
-    <div class="ingredients">
-      <h3>Ingrédients</h3>
-      <ul id="ingredientsListe"></ul>
+  <h1 class="text-center mb-4"><a href="/" class="text-decoration-none text-dark fw-bold">Open Recettes</a></h1>
+  <h2 class="text-center mb-5 fw-semibold" id="recetteName"></h2>
+  <form id="portions" class="m-5">
+    <div class="row">
+      <div class="col-sm-3 mx-auto">
+        <div class="mb-3">
+          <label class="form-label">Quantité totale</label>
+          <div class="input-group">
+            <input type="number" class="form-control" id="portionsNb" name="portionsNb">
+            <span class="input-group-text" id="uniteRecette"></span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="instructions">
-      <h3>Instructions</h3>
-      <ol id="instructionsListe"></ol>
+  </form>
+  <div class="container">
+    <div class="row mb-3">
+      <h3 class="fw-semibold">Ingrédients</h3>
+      <div class="col">
+        <ul class="list-group" id="ingredientsListe"></ul>
+      </div>
     </div>
-    <div class="variantes" hidden>
-      <h3>Variantes</h3>
-      <ul id="variantesListe"></ul>
+    <div class="row mb-3">
+      <h3 class="fw-semibold">Instructions</h3>
+      <ol class="list-group list-group-numbered list-group-flush" id="instructionsListe"></ol>
     </div>
-  </div>
-  <div class="infosRecette">
-    <div class="motsCles">
-      <h4>Mots clés</h4>
-      <id id="keywords"></id>
+    <div class="row mb-3 variantes">
+      <h3 class="fw-semibold">Variantes</h3>
+      <div class="col">
+        <ul class="list-group" id="variantesListe"></ul>
+      </div>
+    </div>
+    <div class="row mb-3 motsCles">
+      <h3 class="fw-semibold">Mots clés</h3>
+      <div class="container text-start">
+        <div class="d-flex flex-wrap gap-2" id="keywords"></div>
+      </div>
     </div>
   </div>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"

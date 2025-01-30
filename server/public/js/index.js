@@ -82,7 +82,6 @@ $(document).ready(function () {
       $cardBody.append($button);
       $card.append($cardBody);
 
-      // Wrap in a Bootstrap `.col`
       const $col = $("<div>").addClass("col").append($card);
 
       $resultList.append($col);

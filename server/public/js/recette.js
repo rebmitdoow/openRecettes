@@ -1,4 +1,4 @@
-const baseUrl = "http://localhost:3005"
+const baseUrl = "http://localhost:3005";
 let portionsNb = 1;
 let recetteData = {};
 
@@ -11,9 +11,7 @@ $(document).ready(async function () {
   const recetteId = urlParams.get("id");
 
   try {
-    const response = await fetch(
-      `/api/recette?id=${recetteId}`
-    );
+    const response = await fetch(`/api/recette?id=${recetteId}`);
 
     if (!response.ok) {
       throw new Error("Error fetching data from server");
@@ -41,7 +39,7 @@ $(document).ready(async function () {
 });
 
 function displayItemName(item) {
-  $("#recetteName").html(`<h2>${item.nom_recette}</h2>`);
+  $("#recetteName").html(item.nom_recette);
 }
 
 function displayUnite(item) {
@@ -55,14 +53,31 @@ function displayIngredients(recetteData) {
   const ingredients = recetteData.ingredients_recette;
   const quantite_totale = recetteData.quantite_recette;
 
-  ingredients.forEach((ingredient) => {
-    const adjustedMass =
-      (ingredient.quantite_ingredient / quantite_totale) * portionsNb;
-    const listItem = `<li><b>${ingredient.nom_ingredient} :</b> ${adjustedMass
-      .toFixed(2)
-      .replace(".", ",")} ${ingredient.unite_ingredient}</li>`;
-    $ingredientListe.append(listItem);
-  });
+  ingredients.forEach(
+    ({ quantite_ingredient, nom_ingredient, unite_ingredient }, index) => {
+      const adjustedMass = (
+        (quantite_ingredient / quantite_totale) *
+        portionsNb
+      )
+        .toFixed(2)
+        .replace(".", ",");
+      const uniqueId = `ingredient-${index}`;
+      const $listItem = $("<li>").addClass("list-group-item");
+      const $checkbox = $("<input>")
+        .addClass("form-check-input me-1")
+        .attr({ type: "checkbox", value: "", id: uniqueId });
+      const $label = $("<label>")
+        .addClass("fw-semibold form-check-label stretched-link")
+        .attr("for", uniqueId)
+        .text(`${nom_ingredient} :`);
+      $listItem.append(
+        $checkbox,
+        $label,
+        ` ${adjustedMass} ${unite_ingredient}`
+      );
+      $ingredientListe.append($listItem);
+    }
+  );
 }
 
 function updateIngredients() {
@@ -90,14 +105,16 @@ function displayInstructions(instructions) {
         instruction.instructions_etape.length > 0
       ) {
         instruction.instructions_etape.forEach((etape) => {
-          const $substepItem = $("<li>").text(etape);
+          const $substepItem = $("<li>")
+            .text(etape)
+            .addClass("list-group-item");
           $instructionListe.append($substepItem);
         });
       }
     });
   } else {
     instructions.forEach((instruction) => {
-      const $listItem = $("<li>").text(instruction);
+      const $listItem = $("<li>").text(instruction).addClass("list-group-item");
       $instructionListe.append($listItem);
     });
   }
@@ -111,7 +128,7 @@ function displayVariantes(variantes) {
   if (variantes && variantes.length > 0) {
     $variantesDiv.show();
     variantes.forEach((variante) => {
-      const listItem = `<li>${variante}</li>`;
+      const listItem = `<li class="list-group-item">${variante}</li>`;
       $variantesListe.append(listItem);
     });
   } else {
@@ -127,7 +144,7 @@ function displayMotsCles(motsCles) {
   if (motsCles && motsCles.length > 0) {
     $keywordsDiv.show();
     motsCles.forEach((motCle) => {
-      const keywordItem = `<span>${motCle}<span>`;
+      const keywordItem = `<span class="badge text-bg-secondary">${motCle}</span>`;
       $keywordsContainer.append(keywordItem);
     });
   } else {

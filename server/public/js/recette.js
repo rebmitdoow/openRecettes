@@ -6,6 +6,16 @@ const $portions = $("#portionsNb");
 
 $portions.on("change", updatePortions);
 
+$portions.on("submit", function (event) {
+  event.preventDefault();
+});
+
+$("#portionsNb").on("keydown", function (event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+  }
+});
+
 $(document).ready(async function () {
   const urlParams = new URLSearchParams(window.location.search);
   const recetteId = urlParams.get("id");
@@ -85,6 +95,9 @@ function updateIngredients() {
 }
 
 function updatePortions() {
+  if ($("#portionsNb").val() < 0) {
+    $("#portionsNb").val(1);
+  }
   portionsNb = parseFloat($portions.val());
   displayIngredients(recetteData);
 }

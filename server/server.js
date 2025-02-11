@@ -66,6 +66,9 @@ app.get("/", (req, res) => {
 });
 
 app.get("/recette", (req, res) => {
+  if (!req.query.id) {
+    return res.redirect("/");
+  }
   res.sendFile(path.join(__dirname, "public", "recette.html"));
 });
 

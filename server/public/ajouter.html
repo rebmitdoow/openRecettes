@@ -14,16 +14,18 @@
   <div class="container mt-4">
     <h1 class="text-center mb-4"><a href="/" class="text-decoration-none text-dark fw-bold">Open Recettes</a></h1>
     <div class="d-flex mb-4">
-      <a href="/" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i>Retour à la recherche</a>
+      <a href="/" class="btn btn-link"><img src="/assets/images/arrow-left.svg" class="pe-1" style="width:20px; height:20px">Retour
+        à la
+        recherche</a>
     </div>
     <h2 class="text-center mb-5 fw-semibold">Ajouter une recette</h2>
 
     <form id="addDataForm" class="m-5">
       <div class="mb-3">
-        <label for="linked_recette" class="form-label">Variante de</label>
-        <small class="form-text text-muted">(laisser vide si la recette est originale)</small>
+        <label for="linked_recette" class="form-label mb-0">Variante de ...</label>
+        <small class="d-block mb-2 form-text text-body-secondary">Laisser vide si la recette est originale</small>
         <div class="dropdown">
-          <input type="text" id="search_recette" class="form-control" placeholder="Rechercher une recette existante"
+          <input type="search" id="search_recette" class="form-control" placeholder="Rechercher une recette existante"
             aria-expanded="false">
           <ul id="search_results" class="dropdown-menu w-100 mt-1" style="display: none;"></ul>
         </div>
@@ -60,7 +62,11 @@
 
       <div class="mb-3">
         <label class="form-label">Ingrédients</label>
-        <div id="ingredients" class="mb-2"></div>
+        <div class="container mb-3 px-0">
+          <div id="ingredients" class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-5 g-2">
+            <!-- cards go here -->
+          </div>
+        </div>
         <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
           data-bs-target="#ingredientModal">
           Ajouter un ingrédient
@@ -69,6 +75,8 @@
 
       <div class="mb-3">
         <label class="form-label">Instructions</label>
+        <small class="text-body-secondary d-block mb-2">Mettre les verbes à l'infinitif (exemple : "Cuire" au lieu de
+          "Cuisez")</small>
         <div id="etapes" class="mb-2"></div>
         <button type="button" class="btn btn-outline-secondary" id="addEtapeButton">Ajouter une étape</button>
       </div>

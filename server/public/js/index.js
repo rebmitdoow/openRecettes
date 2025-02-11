@@ -29,6 +29,15 @@ $(document).ready(function () {
 
   $searchButton.on("click", async function (event) {
     event.preventDefault();
+    await triggerSearch();
+  });
+  $searchInput.on("keydown", async function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      await triggerSearch();
+    }
+  });
+  async function triggerSearch() {
     const type_recette = $typeOptions.val();
     const keywords = $keywordInput
       .val()
@@ -55,7 +64,7 @@ $(document).ready(function () {
       console.error("Error during search:", error);
       alert("An error occurred while performing the search. Please try again.");
     }
-  });
+  }
 
   function displayResults(results) {
     $resultList.empty();

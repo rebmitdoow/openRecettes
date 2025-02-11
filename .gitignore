@@ -7,3 +7,4 @@ styles.css
 openRecettes_bruno
 server/open-recettes.tar
 Dockerfile
+*.ps1

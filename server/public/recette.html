@@ -13,19 +13,19 @@
 <body>
   <h1 class="text-center mb-4"><a href="/" class="text-decoration-none text-dark fw-bold">Open Recettes</a></h1>
   <h2 class="text-center mb-5 fw-semibold" id="recetteName"></h2>
-  <form id="portions" class="m-5">
+  <div id="portions" class="m-5">
     <div class="row">
       <div class="col-sm-3 mx-auto">
         <div class="mb-3">
           <label class="form-label">Quantité totale</label>
           <div class="input-group">
-            <input type="number" class="form-control" id="portionsNb" name="portionsNb">
+            <input type="number" class="form-control" id="portionsNb" name="portionsNb" min="0">
             <span class="input-group-text" id="uniteRecette"></span>
           </div>
         </div>
       </div>
     </div>
-  </form>
+  </div>
   <div class="container">
     <div class="row mb-3">
       <h3 class="fw-semibold">Ingrédients</h3>

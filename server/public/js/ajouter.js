@@ -35,21 +35,26 @@ $(document).ready(function () {
     };
     ingredientsData.push(ingredient);
     console.log(ingredientsData);
-    const section = $("<div>").addClass("ingredient-section");
-    section.append(
-      $("<span>")
-        .text(`${ingredientName} : ${ingredientQuantity} ${ingredientUnit}`)
-        .attr("class", "ingredient-name")
+    const col = $("<div>").addClass("col");
+    const card = $("<div>").addClass("card");
+    const cardBody = $("<div>").addClass("card-body");
+    cardBody.append(
+      $("<p>").addClass("fw-semibold card-title").text(`${ingredientName}`)
     );
-
+    cardBody.append(
+      $("<p>")
+        .addClass("card-text")
+        .text(`${ingredientQuantity} ${ingredientUnit}`)
+    );
+    const cardFooter = $("<div>").addClass("text-end");
     const removeButton = $("<button>")
-      .addClass("btn btn-secondary remove-ingredient-btn")
+      .addClass("btn btn-sm")
       .attr("aria-label", `Remove ingredient: ${ingredientName}`)
       .append(
         $("<img>")
-          .attr("src", "/assets/images/trash.svg")
+          .attr("src", "/assets/images/trash-red.svg")
+          .css({ width: "20", height: "20" })
           .attr("alt", "Retirer")
-          .addClass("icon-trash")
       )
       .on("click", function () {
         const index = ingredientsData.findIndex(
@@ -59,13 +64,14 @@ $(document).ready(function () {
             ing.unite_ingredient === ingredientUnit
         );
         if (index !== -1) ingredientsData.splice(index, 1);
-        section.remove();
+        card.remove();
       });
-
-    section.append(removeButton);
-    $("#ingredients").append(section);
+    cardFooter.append(removeButton);
+    cardBody.append(cardFooter);
+    card.append(cardBody);
+    col.append(card);
+    $("#ingredients").append(col);
     $("#ingredientForm").trigger("reset");
-
     $("#ingredientModal").modal("hide");
 
     console.log(ingredientsData);
@@ -73,22 +79,23 @@ $(document).ready(function () {
 
   $("#addEtapeButton").on("click", function () {
     const dynamicTextAreas = $("#etapes");
-    const container = $("<div>").addClass("section");
+    const container = $("<div>").addClass("input-group mb-3");
 
     const newTextArea = $("<textarea>")
-      .addClass("etape-textarea input")
+      .addClass("form-control")
       .attr("rows", 4)
       .attr("cols", 50)
       .attr("placeholder", "Description de l'étape");
 
     const removeButton = $("<button>")
-      .addClass("btn btn-secondary remove-ingredient-btn")
+      .addClass("btn btn-outline-danger")
       .attr("aria-label", "Remove step")
       .append(
         $("<img>")
-          .attr("src", "/assets/images/trash.svg")
+          .attr("src", "/assets/images/trash-red.svg")
+          .attr("width", "20")
+          .attr("height", "20")
           .attr("alt", "Retirer")
-          .addClass("icon-trash")
       )
       .on("click", function () {
         container.remove();
@@ -100,23 +107,23 @@ $(document).ready(function () {
 
   $("#addVarianteButton").on("click", function () {
     const dynamicTextAreas = $("#variantes");
-
-    const container = $("<div>").addClass("section");
+    const container = $("<div>").addClass("input-group mb-3");
 
     const newTextArea = $("<textarea>")
-      .addClass("variante-textarea input")
+      .addClass("form-control")
       .attr("rows", 4)
       .attr("cols", 50)
       .attr("placeholder", "Description");
 
     const removeButton = $("<button>")
-      .addClass("btn btn-secondary remove-ingredient-btn")
-      .attr("aria-label", `Remove ingredient: ${ingredientName}`)
+      .addClass("btn btn-outline-danger")
+      .attr("aria-label", "Remove step")
       .append(
         $("<img>")
-          .attr("src", "/assets/images/trash.svg")
+          .attr("src", "/assets/images/trash-red.svg")
+          .attr("width", "20")
+          .attr("height", "20")
           .attr("alt", "Retirer")
-          .addClass("icon-trash")
       )
       .on("click", function () {
         container.remove();
@@ -264,7 +271,7 @@ $(document).ready(function () {
       } else {
         const noResultsItem = $("<li>")
           .addClass("dropdown-item text-muted")
-          .text("No results")
+          .text("Pas de recette")
           .css("pointer-events", "none");
         $searchResults.append(noResultsItem);
       }

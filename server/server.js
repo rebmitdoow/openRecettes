@@ -199,6 +199,35 @@ app.get("/api/types", async (req, res) => {
   }
 });
 
+app.get("/api/ingredientsAgribalyse", async (req, res) => {
+  try {
+    console.log(req);
+    const baseUrl =
+      "https://data.ademe.fr/data-fair/api/v1/datasets/agribalyse-31-synthese/lines";
+
+    const { page = 1, size = 12, select, q } = req.query;
+
+    const selectDecoded = decodeURIComponent(select);
+    console.log("selectDecoded", selectDecoded);
+    let queryParams = `page=${page}&size=${size}`;
+    if (select) queryParams += `&select=${selectDecoded}`;
+    if (q) queryParams += `&q=${q}`;
+
+    const url = `${baseUrl}?${queryParams}`;
+    console.log("Fetching URL:", url);
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post("/api/ajouterRecette", async (req, res) => {
   try {
     const recetteData = req.body;

@@ -4,21 +4,11 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 const path = require("path");
-const rateLimit = require("express-rate-limit");
-
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: {
-    error: "Too many requests. Please try again later.",
-  },
-});
 
 const app = express();
 const PORT = process.env.PORT;
 
 app.use(cors());
-/* app.use(apiLimiter); */
 
 app.use(bodyParser.json());
 
@@ -43,7 +33,7 @@ const recettesSchema = new mongoose.Schema(
     type_recette: String,
     source_recette: String,
     mere_recette: mongoose.ObjectId,
-    fille_recette: mongoose.ObjectId,
+    fille_recette: [mongoose.ObjectId],
   },
   { collection: "recettes" }
 );
@@ -233,6 +223,15 @@ app.post("/api/ajouterRecette", async (req, res) => {
     const recetteData = req.body;
     const recette = new Recettes(recetteData);
     const result = await recette.save();
+    if (recetteData.mere_recette) {
+      const parentRecette = await Recettes.findById(recetteData.mere_recette);
+      if (parentRecette) {
+        parentRecette.fille_recette.push(
+          new mongoose.Types.ObjectId(result._id)
+        );
+        await parentRecette.save();
+      }
+    }
     res
       .status(200)
       .json({ message: "Recette ajoutée avec succès", data: result });

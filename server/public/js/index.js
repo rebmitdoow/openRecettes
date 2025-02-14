@@ -79,7 +79,7 @@ $(document).ready(function () {
     results.forEach((item) => {
       const $button = $("<button>")
         .attr("type", "button")
-        .addClass("btn btn-link text-start w-100")
+        .addClass("btn btn-link text-decoration-none text-start w-100")
         .text(item.nom_recette)
         .on("click", function () {
           window.open(`/recette?id=${item._id}`, "_blank");

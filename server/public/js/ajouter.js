@@ -150,108 +150,178 @@ $(document).ready(function () {
     console.log("Updated formData:", formData);
   });
 
-  // Ingredients List
-  $("#addingredientButton").on("click", function () {
-    $("#ingredientModal").show();
-  });
-
-  $("#closeModalButton").on("click", function () {
-    $("#ingredientModal").hide();
-  });
-
-  $("#ingredientForm").on("submit", function (event) {
-    event.preventDefault();
-    const ingredient = {
-      nom_ingredient: $("#ingredientName").val().trim(),
-      quantite_ingredient: parseFloat($("#ingredientQuantity").val()),
-      unite_ingredient: $("#ingredientUnit").val(),
-    };
-
-    if (!ingredient.nom_ingredient || isNaN(ingredient.quantite_ingredient)) {
-      alert("Veuillez remplir tous les champs correctement.");
-      return;
-    }
-
-    formData.ingredients_recette.push(ingredient);
-    console.log("Updated formData:", formData);
-
-    // Add ingredient card to UI
-    const col = $("<div>").addClass("col");
-    const card = $("<div>").addClass("card");
-    const cardBody = $("<div>").addClass("card-body");
-    cardBody.append(
-      $("<p>")
-        .addClass("fw-semibold card-title")
-        .text(ingredient.nom_ingredient)
-    );
-    cardBody.append(
-      $("<p>")
-        .addClass("card-text")
-        .text(
-          `${ingredient.quantite_ingredient} ${ingredient.unite_ingredient}`
-        )
-    );
-
-    const removeButton = $("<button>")
-      .addClass("btn btn-sm")
-      .attr("aria-label", `Remove ingredient: ${ingredient.nom_ingredient}`)
-      .append(
-        $("<img>")
-          .attr("src", "/assets/images/trash-red.svg")
-          .css({ width: "20", height: "20" })
-          .attr("alt", "Retirer")
-      )
-      .on("click", function () {
-        formData.ingredients_recette = formData.ingredients_recette.filter(
-          (ing) => ing.nom_ingredient !== ingredient.nom_ingredient
-        );
-        card.remove();
-        console.log("Updated formData:", formData);
-      });
-
-    card.append(cardBody.append(removeButton));
-    col.append(card);
-    $("#ingredients").append(col);
-    $("#ingredientForm").trigger("reset");
-    $("#ingredientModal").modal("hide");
-  });
-
-  // Steps (Étapes)
-  $("#addEtapeButton").on("click", function () {
-    const etapeContainer = $("<div>").addClass("input-group mb-3");
-
-    const newEtapeArea = $("<textarea>")
-      .addClass("form-control")
-      .attr("rows", 4)
-      .attr("placeholder", "Description de l'étape");
-
-    const removeButton = $("<button>")
-      .addClass("btn btn-outline-danger")
-      .attr("aria-label", "Remove step")
-      .append(
-        $("<img>")
-          .attr("src", "/assets/images/trash-red.svg")
-          .attr("width", "20")
-          .attr("height", "20")
-          .attr("alt", "Retirer")
-      )
-      .on("click", function () {
-        const index = etapeContainer.index();
-        formData.instructions_recette.splice(index, 1);
-        etapeContainer.remove();
-        console.log("Updated formData:", formData);
-      });
-
-    newEtapeArea.on("input", function () {
-      const index = etapeContainer.index();
-      formData.instructions_recette[index] = $(this).val();
-      console.log("Updated formData:", formData);
+  $(document).ready(function () {
+    $("#ingredients").sortable({
+      placeholder: "sortable-placeholder",
+      update: function (event, ui) {
+        updateIngredientOrder();
+      },
     });
 
-    etapeContainer.append(newEtapeArea, removeButton);
-    $("#etapes").append(etapeContainer);
-    formData.instructions_recette.push("");
-    console.log("Updated formData:", formData);
+    // Add ingredient
+    $("#ingredientForm").on("submit", function (event) {
+      event.preventDefault();
+
+      const ingredient = {
+        nom_ingredient: $("#ingredientName").val().trim(),
+        quantite_ingredient: parseFloat($("#ingredientQuantity").val()),
+        unite_ingredient: $("#ingredientUnit").val(),
+      };
+
+      if (!ingredient.nom_ingredient || isNaN(ingredient.quantite_ingredient)) {
+        alert("Veuillez remplir tous les champs correctement.");
+        return;
+      }
+
+      formData.ingredients_recette.push(ingredient);
+      console.log("Updated formData:", formData);
+
+      // Create ingredient card
+      const col = $("<div>")
+        .addClass("col ingredient-item")
+        .attr("data-name", ingredient.nom_ingredient);
+      const card = $("<div>").addClass("card");
+      const cardBody = $("<div>").addClass("card-body");
+      cardBody.append(
+        $("<p>")
+          .addClass("fw-semibold card-title")
+          .text(ingredient.nom_ingredient)
+      );
+      cardBody.append(
+        $("<p>")
+          .addClass("card-text")
+          .text(
+            `${ingredient.quantite_ingredient} ${ingredient.unite_ingredient}`
+          )
+      );
+
+      const removeButton = $("<button>")
+        .addClass("btn btn-sm btn-remove")
+        .attr("aria-label", `Remove ingredient: ${ingredient.nom_ingredient}`)
+        .append(
+          $("<img>")
+            .attr("src", "/assets/images/trash-red.svg")
+            .css({ width: "20px", height: "20px" })
+            .attr("alt", "Retirer")
+        )
+        .on("click", function () {
+          formData.ingredients_recette = formData.ingredients_recette.filter(
+            (ing) => ing.nom_ingredient !== ingredient.nom_ingredient
+          );
+          col.remove();
+          console.log("Updated formData:", formData);
+        });
+
+      card.append(cardBody.append(removeButton));
+      col.append(card);
+      $("#ingredients").append(col);
+
+      // Refresh sortable
+      $("#ingredients").sortable("refresh");
+
+      // Reset form and close modal
+      $("#ingredientForm").trigger("reset");
+      $("#ingredientModal").modal("hide");
+    });
+
+    function updateIngredientOrder() {
+      const newOrder = [];
+      $("#ingredients .ingredient-item").each(function () {
+        const name = $(this).attr("data-name");
+        const ingredient = formData.ingredients_recette.find(
+          (ing) => ing.nom_ingredient === name
+        );
+        if (ingredient) {
+          newOrder.push(ingredient);
+        }
+      });
+      formData.ingredients_recette = newOrder;
+      console.log("Updated order:", formData);
+    }
+  });
+
+  // ajout des étapes
+  $(document).ready(function () {
+    //modification du style
+    $("<style>")
+      .prop("type", "text/css")
+      .html(
+        `
+        @media (max-width: 768px) {
+            .drag-handle {
+                display: none !important;
+            }
+        }
+    `
+      )
+      .appendTo("head");
+
+    $("#etapes")
+      .sortable({
+        handle: ".drag-handle", // Drag handle
+        placeholder: "sortable-placeholder",
+        update: function () {
+          formData.instructions_recette = $("#etapes textarea")
+            .map(function () {
+              return $(this).val();
+            })
+            .get();
+          console.log("Reordered formData:", formData);
+        },
+      })
+      .disableSelection();
+
+    $("#addEtapeButton").on("click", function () {
+      const etapeContainer = $("<div>").addClass("input-group mb-3");
+
+      const dragHandle = $("<button>")
+        .addClass("btn btn-outline-secondary drag-handle px-2 cursor-grab")
+        .css({
+          display: "flex",
+          "align-items": "center",
+          cursor: "grab",
+        })
+        .append(
+          $("<img>")
+            .attr("src", "/assets/images/drag-handle.svg")
+            .attr("width", "20")
+            .attr("height", "20")
+            .attr("alt", "Déplacer")
+        );
+
+      const newEtapeArea = $("<textarea>")
+        .addClass("form-control")
+        .attr("rows", 4)
+        .attr("placeholder", "Description de l'étape");
+
+      const removeButton = $("<button>")
+        .addClass("btn btn-outline-danger")
+        .attr("aria-label", "Remove step")
+        .append(
+          $("<img>")
+            .attr("src", "/assets/images/trash-red.svg")
+            .attr("width", "20")
+            .attr("height", "20")
+            .attr("alt", "Retirer")
+        )
+        .on("click", function () {
+          const index = etapeContainer.index();
+          formData.instructions_recette.splice(index, 1);
+          etapeContainer.remove();
+          console.log("Updated formData:", formData);
+        });
+
+      newEtapeArea.on("input", function () {
+        const index = etapeContainer.index();
+        formData.instructions_recette[index] = $(this).val();
+        console.log("Updated formData:", formData);
+      });
+
+      etapeContainer.append(dragHandle, newEtapeArea, removeButton);
+      $("#etapes").append(etapeContainer);
+      formData.instructions_recette.push("");
+      console.log("Updated formData:", formData);
+    });
   });
 
   // Variants
